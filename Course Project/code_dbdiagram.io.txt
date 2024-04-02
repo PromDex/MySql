@@ -1,0 +1,91 @@
+CREATE TABLE `users` (
+  `id` integer PRIMARY KEY,
+  `username` varchar(255),
+  `role` varchar(255),
+  `created_at` timestamp
+);
+
+CREATE TABLE `catalogs` (
+  `id` integer PRIMARY KEY,
+  `following_user_id` integer,
+  `followed_user_id` integer,
+  `created_at` timestamp
+);
+
+CREATE TABLE `products` (
+  `id` integer PRIMARY KEY,
+  `name` varchar(255),
+  `description` text,
+  `price` decimal,
+  `catalog_id` integer,
+  `created_at` timestamp
+);
+
+CREATE TABLE `orders` (
+  `id` integer PRIMARY KEY,
+  `user_id` integer,
+  `created_at` timestamp
+);
+
+CREATE TABLE `orders_products` (
+  `id` integer PRIMARY KEY,
+  `order_id` integer,
+  `product_id` integer,
+  `total` integer,
+  `created_at` timestamp
+);
+
+CREATE TABLE `discounts` (
+  `id` integer PRIMARY KEY,
+  `user_id` integer,
+  `product_id` integer,
+  `discount` float,
+  `started_at` timestamp,
+  `finished_at` timestamp,
+  `created_at` timestamp
+);
+
+CREATE TABLE `storehouses` (
+  `id` integer PRIMARY KEY,
+  `name` varchar(255),
+  `created_at` timestamp
+);
+
+CREATE TABLE `storehouses_products` (
+  `id` integer PRIMARY KEY,
+  `storehouse_id` integer,
+  `product_id` integer,
+  `value` integer,
+  `created_at` timestamp
+);
+
+CREATE TABLE `posts` (
+  `id` integer PRIMARY KEY,
+  `title` varchar(255),
+  `body` text COMMENT 'Content of the post',
+  `user_id` integer,
+  `status` varchar(255),
+  `created_at` timestamp
+);
+
+ALTER TABLE `catalogs` ADD FOREIGN KEY (`following_user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `catalogs` ADD FOREIGN KEY (`followed_user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `products` ADD FOREIGN KEY (`catalog_id`) REFERENCES `catalogs` (`id`);
+
+ALTER TABLE `orders` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `orders_products` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
+
+ALTER TABLE `orders_products` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+ALTER TABLE `discounts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `discounts` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+ALTER TABLE `storehouses_products` ADD FOREIGN KEY (`storehouse_id`) REFERENCES `storehouses` (`id`);
+
+ALTER TABLE `storehouses_products` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+ALTER TABLE `posts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
